@@ -2700,7 +2700,7 @@ ul {
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }
-@media (max-height: 1550px) {
+@media (max-height: 2050px) {
     .olivia-img {
         border-radius: 240px 40px 40px 40px;
         max-width: 100% !important;
