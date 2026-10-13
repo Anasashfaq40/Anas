@@ -46,6 +46,38 @@ const sectionObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
 }),{rootMargin:'-35% 0px -55%'});
 document.querySelectorAll('main section[id]').forEach(section=>sectionObserver.observe(section));
 
+const reel=document.querySelector('[data-reel]');
+const reelSlides=[...document.querySelectorAll('[data-reel-slide]')];
+const reelProgress=document.querySelector('[data-reel-progress]');
+const reelCurrent=document.querySelector('[data-reel-current]');
+let reelFrame=0;
+function updateReel(){
+  reelFrame=0;
+  if(!reel||reduced||!reelSlides.length)return;
+  const rect=reel.getBoundingClientRect();
+  const distance=Math.max(1,reel.offsetHeight-innerHeight);
+  const progress=Math.min(1,Math.max(0,-rect.top/distance));
+  const position=progress*(reelSlides.length-1);
+  const active=Math.min(reelSlides.length-1,Math.max(0,Math.round(position)));
+  reelSlides.forEach((slide,index)=>{
+    const delta=index-position;
+    const magnitude=Math.abs(delta);
+    const opacity=Math.max(0,1-magnitude*1.08);
+    slide.style.opacity=opacity.toFixed(3);
+    slide.style.transform=`translateY(${delta*10}%) scale(${1-Math.min(magnitude*.055,.11)})`;
+    slide.style.filter=`blur(${Math.min(magnitude*7,10)}px)`;
+    slide.style.clipPath=`inset(${Math.min(magnitude*6,10)}% ${Math.min(magnitude*2.5,4)}% round 32px)`;
+    slide.style.zIndex=String(20-Math.round(magnitude*2));
+    slide.setAttribute('aria-hidden',String(index!==active));
+    const link=slide.querySelector('a');if(link)link.tabIndex=index===active?0:-1;
+    const image=slide.querySelector('img');if(image)image.style.transform=`scale(1.08) translateY(${delta*-2.5}%)`;
+  });
+  reelProgress.style.transform=`scaleX(${progress})`;
+  reelCurrent.textContent=String(active+1).padStart(2,'0');
+}
+function requestReel(){if(!reelFrame)reelFrame=requestAnimationFrame(updateReel)}
+if(reel&&!reduced){updateReel();addEventListener('scroll',requestReel,{passive:true});addEventListener('resize',requestReel,{passive:true})}
+
 if(finePointer&&!reduced){
   addEventListener('pointermove',event=>{
     document.documentElement.style.setProperty('--mouse-x',`${event.clientX}px`);

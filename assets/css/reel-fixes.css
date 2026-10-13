@@ -1,0 +1,3 @@
+.reel-heading{z-index:32;top:6.15rem;left:1.75rem;right:1.75rem;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.reel-controls{z-index:32}
+@media(min-width:768px){.reel-heading{top:6.85rem}}
