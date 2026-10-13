@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anasashfaq40.github.io/Anas/sitemap.xml
